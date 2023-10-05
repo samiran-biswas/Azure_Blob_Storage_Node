@@ -1,0 +1,91 @@
+.textLayer,.annotationLayer{
+    display: none;
+}
+
+/* .pdf-container {
+  width: 100%;
+  height: 500px; 
+  overflow-y: auto; 
+} */
+.pdf-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  overflow-x: auto; /* Add horizontal scrollbar if needed */
+}
+
+.pdf-page {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important; /* Shadow effect */
+}
+
+.pdf-viewer {
+  width: 100%;
+  height: 100%; /* Occupy full height of the container */
+}
+
+/* FileUpload.css */
+
+/* body {
+    margin: 0;
+  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+  }
+  
+  .container {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    max-width: 800px;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .pdf-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .pdf-page {
+    max-width: 100%;
+    height: auto;
+  }
+   */
+
+
+
+
+
+
+   .pdf-container {
+    width: 600px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    overflow-x: auto;
+  }
+  
+  .pdf-page {
+    position: relative;
+  }
+  
+  .signature-image {
+    position: absolute;
+    bottom: 0;
+    
+    right: 0;
+
+    /* right: 50%;
+    top: 50%; */
+    width: 50px; /* Adjust the width of the signature image */
+    height: auto;
+  }
+  
