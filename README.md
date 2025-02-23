@@ -1,70 +1,180 @@
-# Getting Started with Create React App
+# 📂 File Upload & Storage with Azure Blob Storage (Node.js + React.js)  
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 🚀 Overview  
+This project demonstrates **file upload and retrieval** using **Node.js**, **Express.js**, and **Azure Blob Storage**, with a **React.js frontend** to handle file uploads and display links. Additionally, the project integrates **MongoDB** to store file metadata and **Nodemailer** to send download links via email.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🛠 Tech Stack  
+### **Backend (Node.js + Express.js)**  
+- **Multer**: Handles file uploads.  
+- **Azure Blob Storage SDK**: Stores and retrieves files.  
+- **Mongoose**: Stores file metadata in MongoDB.  
+- **Nodemailer**: Sends emails with download links.  
+- **CORS**: Enables cross-origin requests.  
 
-### `npm start`
+### **Frontend (React.js)**  
+- **Axios**: Handles API requests.  
+- **React Hooks**: Manages component state.  
+- **Bootstrap/Material UI**: UI styling (optional).  
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## ⚙️ Features  
+✅ **Upload PDFs/Images to Azure Blob Storage**  
+✅ **Generate secure download links with SAS token**  
+✅ **Store file metadata in MongoDB**  
+✅ **Send download links via email using Nodemailer**  
+✅ **Retrieve and list uploaded files in React.js frontend**  
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 📦 Backend Setup (Node.js + Express)  
 
-### `npm run build`
+### 1️⃣ **Clone Repository**  
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+git clone https://github.com/your-repo-name.git
+cd Azure_Blob_Storage_Node
+2️⃣ Install Dependencies
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+npm install express multer mongoose nodemailer cors dotenv @azure/storage-blob
+3️⃣ Set Up MongoDB
+Ensure you have MongoDB running. If using MongoDB Atlas, get your connection string.
+Modify server.js to use your database:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+mongoose.connect('mongodb://127.0.0.1:27017/AzurePdfLinks', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+4️⃣ Configure Azure Storage
+Update .env with your Azure account details:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+env
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+AZURE_STORAGE_ACCOUNT=your_account_name
+AZURE_STORAGE_ACCESS_KEY=your_account_key
+AZURE_CONTAINER_NAME=pdf-esign
+AZURE_SIGNED_CONTAINER=esignc
+5️⃣ Start the Server
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+node server.js
+Your backend should now be running on http://localhost:4000 🎉
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+🎨 Frontend Setup (React.js)
+1️⃣ Create a React App
 
-## Learn More
+npx create-react-app azure-file-upload
+cd azure-file-upload
+npm install axios
+2️⃣ Upload File Component (UploadFile.js)
+javascript
+Copy
+Edit
+import React, { useState } from 'react';
+import axios from 'axios';
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+const UploadFile = () => {
+  const [file, setFile] = useState(null);
+  const [uploadedUrl, setUploadedUrl] = useState('');
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+  const handleFileChange = (e) => setFile(e.target.files[0]);
 
-### Code Splitting
+  const uploadFile = async () => {
+    if (!file) return alert('Please select a file');
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+    const formData = new FormData();
+    formData.append('pdf', file);
 
-### Analyzing the Bundle Size
+    try {
+      const response = await axios.post('http://localhost:4000/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      setUploadedUrl(response.data.url);
+    } catch (error) {
+      console.error('Upload failed', error);
+    }
+  };
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+  return (
+    <div>
+      <input type="file" onChange={handleFileChange} />
+      <button onClick={uploadFile}>Upload</button>
+      {uploadedUrl && <p>File uploaded: <a href={uploadedUrl} target="_blank" rel="noopener noreferrer">Download</a></p>}
+    </div>
+  );
+};
 
-### Making a Progressive Web App
+export default UploadFile;
+3️⃣ Integrate Component in App.js
+javascript
+Copy
+Edit
+import React from 'react';
+import UploadFile from './UploadFile';
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+function App() {
+  return (
+    <div>
+      <h1>Upload Files to Azure Blob Storage</h1>
+      <UploadFile />
+    </div>
+  );
+}
 
-### Advanced Configuration
+export default App;
+4️⃣ Run the React App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+npm start
+Visit http://localhost:3000 and upload files! 🚀
 
-### Deployment
+📩 Email Notification Setup
+To send email notifications with download links, update your server.js with:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+javascript
+Copy
+Edit
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "your-email@gmail.com",
+    pass: "your-app-password",
+  },
+});
+Then, modify the /upload route to send an email:
 
-### `npm run build` fails to minify
+javascript
+Copy
+Edit
+const mailOptions = {
+  from: 'your-email@gmail.com',
+  to: 'recipient-email@example.com',
+  subject: 'Download Link for PDF',
+  text: `Click the link to download: ${url}`,
+};
+await transporter.sendMail(mailOptions);
+Note: Use an App Password instead of your real email password.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+🔥 API Endpoints
+Method	Endpoint	Description
+POST	/upload	Upload a file to Azure Blob
+POST	/saveSignedPdf	Upload signed PDF to Azure Blob
+🚀 Deployment
+To deploy your Node.js backend, use:
+
+Render / Heroku / AWS EC2
+Ensure MongoDB Atlas is configured
+Set environment variables in .env
+For React frontend, deploy using:
+
+Netlify / Vercel / Firebase Hosting
+🤝 Contributing
+Contributions are welcome! Feel free to open an issue or submit a pull request.
+
+📞 Contact
+
+LinkedIn: linkedin.com/in/samiran-biswas
+🎯 Let's build something awesome together! 🚀
+
+
+This README provides a clear **setup guide**, **code snippets**, and **API documentation** to help others understand and use your project. Let me know if you need any modifications! 🚀
